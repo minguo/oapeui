@@ -2,22 +2,28 @@ package oapeui.component
 {
 	import flash.display.DisplayObject;
 	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	
 	import oape.common.OALogger;
 	import oape.io.managers.FodderManager;
 	
+	import oapeui.common.OAUS_TextFormat;
 	import oapeui.component.base.OAU_Panel;
 	
 
 	/**
 	 * 高级UI控件:内容提示框
+	 * 这个UI的的大小,根据宽度,高度自动判定
+	 * 
 	 * */
-	public class OAU_ToolTip extends OAU_Panel
+	public final class OAU_ToolTip extends OAU_Panel
 	{
 		/**
-		 * 背景块
+		 * @private
 		 * */
-		private var _skinClassName_Background:String = "tooltip_background";
+		protected static var __$$ClassName:String = "OAU_ToolTip";
 		
 		/**
 		 * 文本显示控件
@@ -29,23 +35,35 @@ package oapeui.component
 		 * */
 		private var _text:String = "";
 		
+		/**
+		 * 要显示的HTML内容,优先级大于text
+		 * */
+		private var _htmlText:String = "";
+		
+		/**
+		 * 文本的样式
+		 * */
+		protected var _textFormat:OAUS_TextFormat = null;
+		
+		/**
+		 * 四周边距
+		 * */
+		protected var _padding:int = 20;
+		
 		
 		/**
 		 * 使用的UI名字,这个名字如果不设定默认会使用类名
 		 * */
 		public function OAU_ToolTip(uiName:String = "")
 		{
-			super();
-			this.enableDrop(true);
-			_rectDisplayMode = true;
-			__$$ClassName = "OAU_ToolTip";
+			if(_$$ClassName == "" || _$$ClassName == null)
+			{
+				_$$ClassName = "OAU_ToolTip";
+			}
 			_$UIName = (uiName == null || uiName == "")?"OAU_ToolTip":uiName;
+			super(_$UIName);
 			
-			
-			
-			this._skinClassNames.push(_skinClassName_Background);
-			
-			super.loadUIFodders();
+//			this._rectDisplayMode = false;
 		}
 		
 		
@@ -57,26 +75,12 @@ package oapeui.component
 		 * */
 		protected override function initSkin():void
 		{
-			var skin:DisplayObject;
-			var skinClass:Class;
-			var initSkinSuccess:Boolean = true;
+			_textField = new TextField();
+			_textField.multiline = true;
+			_textField.wordWrap = true;
+			this.addChild(_textField);
 			
-			skinClass = FodderManager.getFodderClass(_fodderUrl,_skinClassName_Background);
-			if(skinClass)
-			{
-				skin = new skinClass();
-				skin.name = _skinClassName_Background;
-				this._containerSkin.addChild(skin);
-				_skinObject[skin.name] = skin;
-			}else
-			{
-				OALogger.warn(__$$ClassName+"=>initSkin,name:"+this.name+",缺少资源类:"+_skinClassName_Background+",于素材文件:"+_fodderUrl);
-				initSkinSuccess = false;
-			}
-			if(initSkinSuccess == false){ return ;}
 			super.initSkin();
-			
-			
 			sizeChange();
 		}
 		
@@ -84,9 +88,22 @@ package oapeui.component
 		/**
 		 * 设置要显示的文本内容
 		 * */
-		public function setText(text:String):void
+		public function setText(text:String , tf:OAUS_TextFormat):void
 		{
 			_text = text;
+			
+			if(tf == null)
+			{
+				tf = new OAUS_TextFormat();
+			}
+			if(tf._textFormat == null)
+			{
+				tf._textFormat = new TextFormat();
+			}
+			tf._textFormat.align = TextFormatAlign.LEFT;
+			
+			_textFormat = tf;
+			
 			this.updateDisplay();
 		}
 		
@@ -99,7 +116,7 @@ package oapeui.component
 		 * */
 		protected override function dispose(callerClassName:String = ""):void
 		{
-			super.dispose(__$$ClassName);
+			super.dispose(_$$ClassName);
 		}
 		
 		
@@ -126,13 +143,27 @@ package oapeui.component
 			var upButtonHeight:int = 0;
 			var thumbHeight:int = 0;
 			
-			target = _skinObject[_skinClassName_Background];
-			if(target)
-			{
-				target.width = _width;
-				target.height = _height;
-			}
+			if(_width < _padding*3){ _width = _padding*3;}
+
+			_textField.x = _textField.y = _padding;
+			_textField.width = _width - _padding*2;
 			
+			if(_htmlText != "")
+			{
+				_textField.htmlText = _htmlText;
+				_textField.autoSize = TextFieldAutoSize.LEFT;
+			}else
+			{
+				//更新显示
+				_textField.text = _text;
+				_textField.autoSize = TextFieldAutoSize.LEFT;
+				if(_textFormat)
+				{
+					_textField.setTextFormat(_textFormat._textFormat);
+					_textField.filters = _textFormat._filters;
+				}
+			}
+			_height = _textField.height+_padding*2;
 			
 			super.updateDisplay();
 		}
