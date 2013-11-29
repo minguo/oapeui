@@ -49,9 +49,9 @@ package oapeui.component
 		private var _padding:int = 2;
 		
 		/**
-		 * tab标签设定
+		 * tab标签按钮
 		 * */
-		private var _tabItems:Vector.<OAU_TabBar_Item> = new Vector.<OAU_TabBar_Item>();
+		private var _tabItems:Vector.<OAU_ToggleButton> = new Vector.<OAU_ToggleButton>();
 		
 		/**
 		 * tab标签的样式
@@ -63,11 +63,11 @@ package oapeui.component
 		 * */
 		public function OAU_TabBar(uiName:String = "")
 		{
-			if(_$$ClassName == "" || _$$ClassName == null)
+			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$$ClassName = "OAU_TabBar";
+				_$ClassName = "OAU_TabBar";
 			}
-
+			_$UIName = (uiName == null || uiName == "")?"OAU_TabBar":uiName;
 			super();
 			
 			this.initSkin();
@@ -75,49 +75,121 @@ package oapeui.component
 		
 		
 		/**
-		 * 添加一个标签,并把这个标签跟一个容器关联起来
-		 * @param	tabName		tab标签对象的name属性
-		 * @param	tabTitle	tab标签的文字内容
-		 * @param	tabTarget	tab标签切换的对象
+		 * 设置标签间距
+		 * @param	padding		间距(像素)
 		 * */
-		public function addTab(tabName:String , tabTitle:String):void
+		public function setTabPadding(padding:int):void
 		{
-			if(tabName == "" || tabName == null)
-			{ 
-				OALogger.error(_$$ClassName+"=>addTab,tabName未设定");
-				return ;
-			}
-			
-			var tabItem:OAU_TabBar_Item = new OAU_TabBar_Item();
-			
-			tabItem._tabName = tabName;
-			tabItem._tabTitle = tabTitle;
-			
-			this._tabItems[this._tabItems.length] = tabItem;
-			
-			tabItem._tabButton = new OAU_ToggleButton();
-			tabItem._tabButton.setText(tabTitle,_tabItemTextFormat);
-			
-			this.addChild(tabItem._tabButton);
-			
+			_padding = padding;
 			this.updateDisplay();
 		}
 		
 		/**
-		 * 移除一个tab标签
+		 * 获取当前标签间距
 		 * */
-		public function removeTab(tabName:String):void
+		public function getTabPadding():int
+		{
+			return _padding;
+		}
+		
+		
+		/**
+		 * 添加一个标签,并把这个标签跟一个容器关联起来
+		 * @param	tabName			tab标签对象的name属性
+		 * @param	tabTitle		tab标签的文字内容
+		 * @param	tabButtonWidth	tab标签按钮的默认宽度
+		 * @param	tabButtonHeight	tab标签按钮的默认高度
+		 * */
+		public function addTab(tabName:String , tabTitle:String , tabButtonWidth:int = 50 ,tabButtonHeight:int = 25):void
+		{
+			if(tabName == "" || tabName == null)
+			{ 
+				OALogger.error(_$ClassName+"=>addTab,tabName未设定");
+				return ;
+			}
+			
+			var tabItem:OAU_ToggleButton;
+			if((tabItem = this.getChildByName(tabName) as OAU_ToggleButton) != null)
+			{
+				//已存在的按钮
+			}else
+			{
+				tabItem = new OAU_ToggleButton(_$UIName);//这里必须使用当前的UINAME,否则会使用默认的togglebutton
+				tabItem.name = tabName;
+				this._tabItems[this._tabItems.length] = tabItem;
+			}
+			tabItem.setSize(tabButtonWidth,tabButtonHeight);
+			tabItem.setText(tabTitle,_tabItemTextFormat);
+			tabItem.setGroupName(this.name+"_defaulttab");
+			
+			this.addChild(tabItem);
+			
+			this.updateDisplay();
+		}
+		
+		
+		/**
+		 * 设置当前选中的标签
+		 * @param	tabName		目标标签按钮的name
+		 * */
+		public function setSelectedTabItem(tabName:String):void
 		{
 			var i:int;
 			for(i=0;i<_tabItems.length;i++)
 			{
-				if(_tabItems[i]._tabName == tabName)
+				if(_tabItems[i].name == tabName)
 				{
-					this.removeChild(_tabItems[i]._tabButton);
-					_tabItems[i]._tabButton = null;
+					_tabItems[i].setSelected(true);
+					break;
+				}
+			}
+			
+			this.updateDisplay();
+		}
+		
+		
+		/**
+		 * 返回当前被选中标签按钮的名字,如果没有被选中的标签按钮则返回null
+		 * */
+		public function getSelectedTabItemName():String
+		{
+			var i:int;
+			for(i=0;i<_tabItems.length;i++)
+			{
+				if(_tabItems[i].isSelected() == true)
+				{
+					return _tabItems[i].name;
+				}
+			}
+			
+			return null;
+		}
+		
+		/**
+		 * 移除一个tab标签
+		 * @param	tabName		目标标签按钮的name
+		 * */
+		public function removeTab(tabName:String):void
+		{
+			var i:int;
+			var isRemoveSelectedItem:Boolean = false;
+			for(i=0;i<_tabItems.length;i++)
+			{
+				if(_tabItems[i].name == tabName)
+				{
+					if(_tabItems[i].isSelected() == true)
+					{
+						isRemoveSelectedItem = true;
+					}
+					this.removeChild(_tabItems[i]);
 					_tabItems.splice(i,1);
 					break;
 				}
+			}
+			
+			if(isRemoveSelectedItem == true && _tabItems.length >0)
+			{
+				_tabItems[0].setSelected(true);
 			}
 			
 			this.updateDisplay();
@@ -139,8 +211,12 @@ package oapeui.component
 		public function setLayout(layout:int):void
 		{
 			_layoutDir = layout
+			
+			this.updateDisplay();
 		}
 		
+		
+		//==============================以下为必须重载的函数=============================
 		
 		
 		/**
@@ -162,7 +238,7 @@ package oapeui.component
 		protected override function fodderLoadError(event:FodderManagerEvent):void
 		{
 			// TODO Auto-generated method stub
-			OALogger.warn(_$$ClassName+"=>fodderLoadError,素材加载失败:"+event.sourceUrl);
+			OALogger.warn(_$ClassName+"=>fodderLoadError,素材加载失败:"+event.sourceUrl);
 		}
 		
 		
@@ -208,10 +284,8 @@ package oapeui.component
 		 * */
 		protected override function dispose(callerClassName:String = ""):void
 		{
-			/**
-			 * 这里添加你的代码
-			 * */
-			super.dispose(_$$ClassName);
+			_tabItemTextFormat = null;
+			super.dispose(_$ClassName);
 		}
 		
 		
@@ -242,18 +316,20 @@ package oapeui.component
 				//水平方向排列
 				for(i=0;i<_tabItems.length;i++)
 				{
-					if(_tabItems[i]._tabButton == null){ continue;}
-					_tabItems[i]._tabButton.x = position;
-					position += _tabItems[i]._tabButton.width + _padding;
+					if(_tabItems[i] == null){ continue;}
+					_tabItems[i].x = position;
+					_tabItems[i].y = 0;
+					position += _tabItems[i].width + _padding;
 				}
 			}else
 			{
 				//垂直方向排列
 				for(i=0;i<_tabItems.length;i++)
 				{
-					if(_tabItems[i]._tabButton == null){ continue;}
-					_tabItems[i]._tabButton.y = position;
-					position += _tabItems[i]._tabButton.height + _padding;
+					if(_tabItems[i] == null){ continue;}
+					_tabItems[i].x = 0;
+					_tabItems[i].y = position;
+					position += _tabItems[i].height + _padding;
 				}
 			}
 			
@@ -261,20 +337,4 @@ package oapeui.component
 		}
 
 	}
-}
-
-/**
- * tab标签的信息
- * */
-import flash.display.DisplayObject;
-
-import oapeui.component.base.OAU_ToggleButton;
-
-class OAU_TabBar_Item
-{
-	public var _tabName:String;
-	
-	public var _tabTitle:String
-	
-	public var _tabButton:OAU_ToggleButton;
 }
