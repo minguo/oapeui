@@ -56,33 +56,15 @@ package oapeui.component
 		 * */
 		public function OAU_ToolTip(uiName:String = "")
 		{
-			if(_$$ClassName == "" || _$$ClassName == null)
+			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$$ClassName = "OAU_ToolTip";
+				_$ClassName = "OAU_ToolTip";
 			}
 			_$UIName = (uiName == null || uiName == "")?"OAU_ToolTip":uiName;
 			super(_$UIName);
 			
-//			this._rectDisplayMode = false;
 		}
 		
-		
-		/**
-		 * @private
-		 * !childOverRideRequire(子类必须重载)
-		 * !childCallRequire(子类必须调用父类此方法)
-		 * 皮肤显示的初始化函数,必须由子类重载
-		 * */
-		protected override function initSkin():void
-		{
-			_textField = new TextField();
-			_textField.multiline = true;
-			_textField.wordWrap = true;
-			this.addChild(_textField);
-			
-			super.initSkin();
-			sizeChange();
-		}
 		
 		
 		/**
@@ -109,6 +91,45 @@ package oapeui.component
 		
 		
 		/**
+		 * 设置文字的边距
+		 * @param	padding		间距(像素)
+		 * */
+		public function setPadding(padding:int):void
+		{
+			_padding = padding;
+			this.updateDisplay();
+		}
+		
+		/**
+		 * 获取文字的边距
+		 * */
+		public function getPadding():int
+		{
+			return _padding;
+		}
+		
+		
+		//==============================以下为必须重载的函数=============================
+		
+		/**
+		 * @private
+		 * !childOverRideRequire(子类必须重载)
+		 * !childCallRequire(子类必须调用父类此方法)
+		 * 皮肤显示的初始化函数,必须由子类重载
+		 * */
+		protected override function initSkin():void
+		{
+			_textField = new TextField();
+			_textField.multiline = true;
+			_textField.wordWrap = true;
+			this.addChild(_textField);
+			
+			super.initSkin();
+			sizeChange();
+		}
+		
+		
+		/**
 		 * @private
 		 * !childOverRideRequire(子类必须重载)
 		 * !childCallRequire(子类必须调用父类此方法)
@@ -116,7 +137,7 @@ package oapeui.component
 		 * */
 		protected override function dispose(callerClassName:String = ""):void
 		{
-			super.dispose(_$$ClassName);
+			super.dispose(_$ClassName);
 		}
 		
 		
@@ -137,11 +158,6 @@ package oapeui.component
 		public override function updateDisplay():void
 		{
 			if(_hadInitSkin == false){ return ;}
-			
-			var target:DisplayObject;
-			
-			var upButtonHeight:int = 0;
-			var thumbHeight:int = 0;
 			
 			if(_width < _padding*3){ _width = _padding*3;}
 

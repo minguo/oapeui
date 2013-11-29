@@ -1,4 +1,4 @@
-package oapeui.componentmodel
+package oapeui.component.items.list
 {
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
@@ -8,6 +8,10 @@ package oapeui.componentmodel
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	import flash.utils.Dictionary;
 	
 	import oape.common.OALogger;
@@ -17,47 +21,107 @@ package oapeui.componentmodel
 	
 	import oapeui.OAPEUIConfig;
 	import oapeui.common.OAUS_FodderInfo;
+	import oapeui.common.OAUS_TextFormat;
 	import oapeui.component.base.OAU_HScrollbar;
 	import oapeui.component.base.OAU_VScrollbar;
 	import oapeui.core.OAU_SkinContainer;
 	
 	/**
-	 * 带皮肤的容器,标准函数执行流程.
-	 * 初始化:::构造函数=>loadUIFodders(手动)=>fodderLoadComplete(自动,重载)=>initSkin(自动,重载)=>sizeChange(手动)=>updateDisplay(手动)
-	 * 释放资源:::dispose(自动,重载)
+	 * 高级UI控件:文本框列表项
+	 * 
 	 * */
-	public class model_OAU_SkinContainer extends OAU_SkinContainer
+	public class OAU_ListTextItem extends OAU_ListItem
 	{
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "model_OAU_SkinContainer";
+		protected static var __$$ClassName:String = "OAU_ListTextItem";
+		
+		/**
+		 * 文本框
+		 * */
+		private var _textField:TextField;
+		
+		/**
+		 * 文本样式
+		 * */
+		private var _textFormat:OAUS_TextFormat;
+		
+		/**
+		 * @private
+		 * 文本
+		 * */
+		protected var _text:String = "";
+		
+		/**
+		 * @private
+		 * 文本的HTML内容,这个内容的显示优先级比_text高
+		 * */
+		protected var _htmlText:String = "";
 		
 		/**
 		 * 这里开始添加你的变量
 		 * */
 		
-		public function model_OAU_SkinContainer(uiName:String)
+		public function OAU_ListTextItem(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$ClassName = "model_OAU_SkinContainer";
+				_$ClassName = "OAU_ListItem";
 			}
-			_$UIName = (uiName == null || uiName == "")?"model_OAU_SkinContainer":uiName;
-			super();
-			/**
-			 * 这里添加你的初始化代码
-			 * */
+			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
+			super(_$UIName);
 		}
 		
 		
 		/**
-		 * 
-		 * 
-		 * 在这里添加你的自定义函数
-		 * 
-		 * 
+		 *  设置tab标签按钮的文字样式
 		 * */
+		public function setTabItemTextFormat(tf:OAUS_TextFormat):void
+		{
+			_textFormat = tf;
+		}
+		
+		
+		/**
+		 * 设置文本的内容
+		 * */
+		public function setText(text:String,tf:OAUS_TextFormat = null):void
+		{
+			_text = text;
+			
+			this.updateDisplay();
+		}
+		
+		/**
+		 * 设置文本格式
+		 * */
+		public function setTextFormat(tf:OAUS_TextFormat = null):void
+		{
+			if(tf)
+			{
+				if(tf._textFormat == null)
+				{
+					tf._textFormat = new TextFormat();
+				}
+				tf._textFormat.align = TextFormatAlign.LEFT;
+			}
+			
+			_textFormat = tf;
+			
+			this.updateDisplay();
+		}
+		
+		
+		/**
+		 * 设置文本的HTML内容,如果设置了HTMLText,则会忽略Text的内容
+		 * */
+		public function setHtmlText(htmlText:String):void
+		{
+			_htmlText = htmlText;
+			this.updateDisplay();
+		}
+		
 		
 		
 		//==============================以下为必须重载的函数=============================
@@ -110,12 +174,15 @@ package oapeui.componentmodel
 		 * */
 		protected override function initSkin():void
 		{
-			/**
-			 * 这里添加你的代码
-			 * */
+			
+			_textField = new TextField();
+			_textField.name = "listTextItemTextField";
+			_textField.mouseEnabled = false;
+			this.addChild(_textField);
+			
 			super.initSkin();
 			
-			sizeChange();
+			this.sizeChange();
 		}
 		
 		
@@ -127,9 +194,6 @@ package oapeui.componentmodel
 		 * */
 		protected override function dispose(callerClassName:String = ""):void
 		{
-			/**
-			 * 这里添加你的代码
-			 * */
 			super.dispose(_$ClassName);
 		}
 		
@@ -155,9 +219,46 @@ package oapeui.componentmodel
 		public override function updateDisplay():void
 		{
 			if(this._hadInitSkin == false){ return ;}
-			/**
-			 *  这里添加你的代码
-			 * */
+			
+			if(_htmlText != "")
+			{
+				_textField.htmlText = _htmlText;
+				_textField.autoSize = TextFieldAutoSize.LEFT;
+			}else
+			{
+				//更新显示
+				_textField.text = _text;
+				_textField.autoSize = TextFieldAutoSize.LEFT;
+				if(_textFormat)
+				{
+					_textField.setTextFormat(_textFormat._textFormat);
+					_textField.filters = _textFormat._filters;
+				}
+			}
+			
+			if(_width < _textField.width)
+			{
+				//宽度超出范围了
+				_textField.width = _width;
+				_textField.x = 0;
+			}else
+			{
+				_textField.x = (_width - _textField.width)/2;
+			}
+			
+			if(_height < _textField.height)
+			{
+				//高度超出范围
+				_height = _textField.height;
+				
+			}else
+			{
+				_textField.y = (_height - _textField.height)/2;
+			}
+			
+			trace(_$ClassName+"=>updateDisplay,height:"+_height);
+			
+			
 			super.updateDisplay();
 		}
 		
