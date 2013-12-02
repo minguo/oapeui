@@ -37,14 +37,14 @@ package oapeui.component.items.list
 		 * @private
 		 * 普通背景框
 		 * */
-		protected var _skinClassName_BackGround_Normal:String = "listitem_background_normal";
+		protected var _skinClassNameKey_BackGround_Normal:String = "listitem_background_normal";
 		
 		
 		/**
 		 * @private
 		 * 鼠标移过背景框
 		 * */
-		protected var _skinClassName_BackGround_MouseOver:String = "listitem_background_mouseover";
+		protected var _skinClassNameKey_BackGround_MouseOver:String = "listitem_background_mouseover";
 		
 		/**
 		 * 当前是否显示鼠标经过的状态
@@ -64,8 +64,8 @@ package oapeui.component.items.list
 			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
 			super();
 			
-			this._skinClassNames.push(_skinClassName_BackGround_Normal);
-			this._skinClassNames.push(_skinClassName_BackGround_MouseOver);
+			this.addSkinClassNameKey(_skinClassNameKey_BackGround_Normal);
+			this.addSkinClassNameKey(_skinClassNameKey_BackGround_MouseOver);
 			
 			this.loadUIFodders();
 		}
@@ -141,37 +141,40 @@ package oapeui.component.items.list
 			var skin:DisplayObject;
 			var skinClass:Class;
 			var initSkinSuccess:Boolean = true;
+			var skinClassName:String,skinClassNameNormal:String;
 			var i:int;
 			
-			skinClass = FodderManager.getFodderClass(_fodderUrl,_skinClassName_BackGround_Normal);
+			skinClassNameNormal = skinClassName = getSkinClassName(_skinClassNameKey_BackGround_Normal);
+			skinClass = FodderManager.getFodderClass(_fodderUrl,skinClassName);
 			if(skinClass)
 			{
 				skin = new skinClass();
-				skin.name = _skinClassName_BackGround_Normal;
+				skin.name = skinClassName;
 				this._containerSkin.addChild(skin);
 				_skinObject[skin.name] = skin;
 			}else
 			{
-				OALogger.warn(_$ClassName+"=>initSkin,name:"+this.name+",缺少资源类:"+_skinClassName_BackGround_Normal+",于素材文件:"+_fodderUrl);
+				OALogger.warn(_$ClassName+"=>initSkin,name:"+this.name+",缺少资源类:"+skinClassName+",于素材文件:"+_fodderUrl);
 				initSkinSuccess = false;
 			}
 			
 			
-			for(i=0;i<_skinClassNames.length;i++)
+			for(i=0;i<_skinClassNameKeys.length;i++)
 			{
-				if(_skinClassNames[i] == _skinClassName_BackGround_Normal){ continue;}
+				skinClassName = getSkinClassName(_skinClassNameKeys[i]);
+				if(skinClassName == skinClassNameNormal){ continue;}
 				
-				skinClass = FodderManager.getFodderClass(_fodderUrl,_skinClassNames[i]);
+				skinClass = FodderManager.getFodderClass(_fodderUrl,skinClassName);
 				if(skinClass)
 				{
 					skin = new skinClass();
-					skin.name = _skinClassNames[i];
+					skin.name = skinClassName;
 					this._containerSkin.addChild(skin);
 					skin.visible = false;
 					_skinObject[skin.name] = skin;
 				}else
 				{
-					OALogger.warn(_$ClassName+"=>initSkin,name:"+this.name+",缺少资源类:"+_skinClassNames[i]+",于素材文件:"+_fodderUrl);
+					OALogger.warn(_$ClassName+"=>initSkin,name:"+this.name+",缺少资源类:"+skinClassName+",于素材文件:"+_fodderUrl);
 					initSkinSuccess = false;
 					break;
 				}
@@ -225,22 +228,29 @@ package oapeui.component.items.list
 		{
 			if(this._hadInitSkin == false){ return ;}
 			
+			var tmpSkinClassName:String;
+			
 			var i:int =0;
-			for(i=0;i<_skinClassNames.length;i++)
+			for(i=0;i<_skinClassNameKeys.length;i++)
 			{
-				trace("setHeight:"+_skinClassNames[i]+":"+_height);
-				_skinObject[_skinClassNames[i]].width = _width;
-				_skinObject[_skinClassNames[i]].height = _height;
+				tmpSkinClassName = getSkinClassName(_skinClassNameKeys[i]);
+				if(_skinObject[tmpSkinClassName] == null){ continue;}
+				trace("setHeight:"+tmpSkinClassName+":"+_height);
+				_skinObject[tmpSkinClassName].width = _width;
+				_skinObject[tmpSkinClassName].height = _height;
 			}
+			
+			var skinClassName_Normal:String = getSkinClassName(_skinClassNameKey_BackGround_Normal);
+			var skinClassName_MouseOver:String = getSkinClassName(_skinClassNameKey_BackGround_MouseOver);
 			
 			if(_isMouseOver == true)
 			{
-				_skinObject[_$UIResPreName+_skinClassName_BackGround_Normal].visible = false;
-				_skinObject[_$UIResPreName+_skinClassName_BackGround_MouseOver].visible = true;
+				_skinObject[skinClassName_Normal].visible = false;
+				_skinObject[skinClassName_MouseOver].visible = true;
 			}else
 			{
-				_skinObject[_$UIResPreName+_skinClassName_BackGround_Normal].visible = true;
-				_skinObject[_$UIResPreName+_skinClassName_BackGround_MouseOver].visible = false;
+				_skinObject[skinClassName_Normal].visible = true;
+				_skinObject[skinClassName_MouseOver].visible = false;
 			}
 			
 			super.updateDisplay();
