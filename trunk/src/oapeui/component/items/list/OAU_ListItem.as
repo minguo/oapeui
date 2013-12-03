@@ -64,6 +64,8 @@ package oapeui.component.items.list
 			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
 			super();
 			
+			this.mouseChildren = false;
+			
 			this.addSkinClassNameKey(_skinClassNameKey_BackGround_Normal);
 			this.addSkinClassNameKey(_skinClassNameKey_BackGround_MouseOver);
 			
@@ -235,7 +237,7 @@ package oapeui.component.items.list
 			{
 				tmpSkinClassName = getSkinClassName(_skinClassNameKeys[i]);
 				if(_skinObject[tmpSkinClassName] == null){ continue;}
-				trace("setHeight:"+tmpSkinClassName+":"+_height);
+//				trace("setHeight:"+tmpSkinClassName+":"+_height);
 				_skinObject[tmpSkinClassName].width = _width;
 				_skinObject[tmpSkinClassName].height = _height;
 			}

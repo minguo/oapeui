@@ -21,6 +21,7 @@ package oapeui.component
 	import oapeui.component.base.OAU_Panel;
 	import oapeui.component.base.OAU_VScrollbar;
 	import oapeui.component.items.list.OAU_ListItem;
+	import oapeui.component.items.list.OAU_ListTextItem;
 	import oapeui.core.OAU_SkinContainer;
 	
 	/**
@@ -39,6 +40,11 @@ package oapeui.component
 		 * */
 		private var _listItems:Vector.<OAU_ListItem> = new Vector.<OAU_ListItem>();
 		
+		/**
+		 * 右侧滚动条
+		 * */
+		private var _vscrollBar:OAU_VScrollbar;
+		
 		public function OAU_List(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
@@ -46,7 +52,19 @@ package oapeui.component
 				_$ClassName = "OAU_List";
 			}
 			_$UIName = (uiName == null || uiName == "")?"OAU_List":uiName;
-			super(_$UIName);
+			
+			//侧面滚动条
+			_vscrollBar = new OAU_VScrollbar();//使用默认样式
+			_vscrollBar.name = "list_vscrollbar";
+			_vscrollBar.visible = false;
+			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();
+			skinChilds.push(_vscrollBar);
+			
+			_vscrollBar.setScrollTarget(this);
+			
+			super(_$UIName,skinChilds);
+			
+			
 			
 			this._rectDisplayMode = true;
 		}
@@ -85,12 +103,24 @@ package oapeui.component
 			{
 				if(_listItems[i].name == itemName)
 				{
+					this.removeChild(_listItems[i]);
 					_listItems.splice(i,1);
 					break;
 				}
 			}
 			
 			this.updateDisplay();
+		}
+		
+		
+		/**
+		 * 获取指定位置的item
+		 * */
+		public function getItemAt(index:int):OAU_ListItem
+		{
+			if(index >= _listItems.length){ return null;}
+			
+			return _listItems[index];
 		}
 		
 		
@@ -106,7 +136,9 @@ package oapeui.component
 		 * */
 		protected override function initSkin():void
 		{
+			trace("listInit");
 			super.initSkin();
+			_vscrollBar.updateDisplay();//初始化完以后,必须updatedisplay一次滚动条
 			sizeChange();
 		}
 		
@@ -130,7 +162,8 @@ package oapeui.component
 		 * */
 		protected override function sizeChange():void
 		{
-			updateDisplay();	
+			_vscrollBar.height = _height;
+			updateDisplay();
 		}
 		
 		/**
@@ -140,6 +173,8 @@ package oapeui.component
 		public override function updateDisplay():void
 		{
 			if(_hadInitSkin == false){ return ;}
+			
+			_vscrollBar.x = _width - _vscrollBar.width;
 			
 			var i:int = 0;
 			var itemLen:int = _listItems.length;
@@ -157,6 +192,24 @@ package oapeui.component
 				}
 //				trace(__$$ClassName+"=>updatedisplay,_listItems["+i+"].y:"+_listItems[i].y);
 				position += _listItems[i].height;
+			}
+			
+			if(position > this._height)
+			{
+				//子对象的高度超过LIST高度,显示滚动条
+				_vscrollBar.visible = true;
+				for(i=0;i<itemLen;i++)
+				{
+					_listItems[i].width = _width - _vscrollBar.width;
+				}
+			}else
+			{
+				_vscrollBar.setThumbPosition(0);
+				_vscrollBar.visible = false;
+				for(i=0;i<itemLen;i++)
+				{
+					_listItems[i].width = _width;
+				}
 			}
 			
 			super.updateDisplay();

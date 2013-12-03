@@ -67,7 +67,7 @@ package oapeui.component.items.list
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$ClassName = "OAU_ListItem";
+				_$ClassName = "OAU_ListTextItem";
 			}
 			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
 			super(_$UIName);
@@ -91,6 +91,14 @@ package oapeui.component.items.list
 			_text = text;
 			
 			this.updateDisplay();
+		}
+		
+		/**
+		 * 获取文本内容
+		 * */
+		public function getText():String
+		{
+			return _text;
 		}
 		
 		/**
@@ -256,7 +264,7 @@ package oapeui.component.items.list
 				_textField.y = (_height - _textField.height)/2;
 			}
 			
-			trace(_$ClassName+"=>updateDisplay,height:"+_height);
+//			trace(_$ClassName+"=>updateDisplay,height:"+_height);
 			
 			
 			super.updateDisplay();

@@ -1,4 +1,4 @@
-package oapeui.componentmodel
+package oapeui.component.items.list
 {
 	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
@@ -8,64 +8,89 @@ package oapeui.componentmodel
 	import flash.events.MouseEvent;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
+	import flash.text.TextField;
+	import flash.text.TextFieldAutoSize;
+	import flash.text.TextFormat;
+	import flash.text.TextFormatAlign;
 	import flash.utils.Dictionary;
 	
 	import oape.common.OALogger;
+	import oape.common.OsCallBackParam;
 	import oape.events.io.FodderEventDispatcher;
 	import oape.events.io.FodderManagerEvent;
 	import oape.io.managers.FodderManager;
 	
 	import oapeui.OAPEUIConfig;
 	import oapeui.common.OAUS_FodderInfo;
+	import oapeui.common.OAUS_TextFormat;
 	import oapeui.component.base.OAU_HScrollbar;
+	import oapeui.component.base.OAU_Image;
 	import oapeui.component.base.OAU_VScrollbar;
 	import oapeui.core.OAU_SkinContainer;
 	
 	/**
-	 * 带皮肤的容器,标准函数执行流程.
-	 * 初始化:::构造函数=>loadUIFodders(手动)=>fodderLoadComplete(自动,重载)=>initSkin(自动,重载)=>sizeChange(手动)=>updateDisplay(手动)
-	 * 释放资源:::dispose(自动,重载)
+	 * 高级UI控件:图像列表项
+	 * 
 	 * */
-	public class model_OAU_SkinContainer extends OAU_SkinContainer
+	public class OAU_ListImageItem extends OAU_ListItem
 	{
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "model_OAU_SkinContainer";
+		protected static var __$$ClassName:String = "OAU_ListTextItem";
 		
 		/**
-		 * 这里开始添加你的变量
+		 * 图像
 		 * */
+		private var _image:OAU_Image;
 		
-		public function model_OAU_SkinContainer(uiName:String)
+		
+		/**
+		 * 标记图像是否已经加载好
+		 * */
+		private var _imageLoadComplete:Boolean = true;
+		
+
+		public function OAU_ListImageItem(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$ClassName = "model_OAU_SkinContainer";
+				_$ClassName = "OAU_ListImageItem";
 			}
-			_$UIName = (uiName == null || uiName == "")?"model_OAU_SkinContainer":uiName;
+			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
 			
-			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();//如果没有滚动条之类的皮肤附加UI控件,这行代码可以注释掉
-			/**
-			 * 这里添加你的子UI控件,必须添加完了再调用super,否则的话,就不能保证子UI初始化完了再初始化当前UI的顺序
-			 * */
-			super(skinChilds);
-			/**
-			 * 这里添加你的初始化代码
-			 * */
 			
-			this.loadUIFodders();//这行代码可选
+			super(_$UIName);
+
 		}
 		
 		
 		/**
-		 * 
-		 * 
-		 * 在这里添加你的自定义函数
-		 * 
-		 * 
+		 * 加载一个图像
 		 * */
+		public function loadImage(sourceUrl:String):void
+		{
+			if(_image)
+			{
+				this.removeChild(_image);
+				_image = null;
+			}
+			if(sourceUrl == ""){ return ;}
+			_imageLoadComplete = false;
+			_image = new OAU_Image();
+			_image.loadImage(sourceUrl,imageLoadComplete);
+		}
 		
+		
+		/**
+		 *  图像加载完成
+		 * */
+		private function imageLoadComplete(ocbp:OsCallBackParam):void
+		{
+			_imageLoadComplete = true;
+			this.addChild(_image);
+			this.updateDisplay();
+		}
 		
 		//==============================以下为必须重载的函数=============================
 		
@@ -117,12 +142,9 @@ package oapeui.componentmodel
 		 * */
 		protected override function initSkin():void
 		{
-			/**
-			 * 这里添加你的代码
-			 * */
 			super.initSkin();
 			
-			sizeChange();
+			this.sizeChange();
 		}
 		
 		
@@ -134,9 +156,6 @@ package oapeui.componentmodel
 		 * */
 		protected override function dispose(callerClassName:String = ""):void
 		{
-			/**
-			 * 这里添加你的代码
-			 * */
 			super.dispose(_$ClassName);
 		}
 		
@@ -162,9 +181,32 @@ package oapeui.componentmodel
 		public override function updateDisplay():void
 		{
 			if(this._hadInitSkin == false){ return ;}
-			/**
-			 *  这里添加你的代码
-			 * */
+			if(_imageLoadComplete == false){ return ;}
+			
+			_image.setSize(_width , _height);
+//			if(_width < _image.width)
+//			{
+//				//宽度超出范围了
+//				_image.width = _width;
+//				_image.x = 0;
+//			}else
+//			{
+//				_image.x = (_width - _image.width)/2;
+//			}
+//			
+//			if(_height < _image.height)
+//			{
+//				//高度超出范围
+//				_height = _image.height;
+//				
+//			}else
+//			{
+//				_image.y = (_height - _image.height)/2;
+//			}
+			
+//			trace(_$ClassName+"=>updateDisplay,height:"+_height);
+			
+			
 			super.updateDisplay();
 		}
 		
