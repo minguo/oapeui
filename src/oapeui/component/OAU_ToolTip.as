@@ -23,7 +23,7 @@ package oapeui.component
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "OAU_ToolTip";
+		public static const __$$ClassName:String = "OAU_ToolTip";
 		
 		/**
 		 * 文本显示控件
@@ -52,7 +52,7 @@ package oapeui.component
 		
 		
 		/**
-		 * 使用的UI名字,这个名字如果不设定默认会使用类名
+		 * @param	uiName		使用的UINAME,默认是类名
 		 * */
 		public function OAU_ToolTip(uiName:String = "")
 		{
@@ -60,7 +60,7 @@ package oapeui.component
 			{
 				_$ClassName = "OAU_ToolTip";
 			}
-			_$UIName = (uiName == null || uiName == "")?"OAU_ToolTip":uiName;
+			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			super(_$UIName);
 			
 		}

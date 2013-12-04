@@ -35,7 +35,7 @@ package oapeui.component.items.list
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "OAU_ListTextItem";
+		public static const __$$ClassName:String = "OAU_ListTextItem";
 		
 		/**
 		 * 文本框
@@ -59,17 +59,17 @@ package oapeui.component.items.list
 		 * */
 		protected var _htmlText:String = "";
 		
+
 		/**
-		 * 这里开始添加你的变量
-		 * */
-		
+		 * @param	uiName		使用的UINAME,默认是类名
+		 * */		
 		public function OAU_ListTextItem(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_ListTextItem";
 			}
-			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
+			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			super(_$UIName);
 		}
 		
