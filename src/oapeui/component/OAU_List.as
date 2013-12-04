@@ -63,7 +63,7 @@ package oapeui.component
 			_vscrollBar.setScrollTarget(this);
 			
 			super(_$UIName,skinChilds);
-			
+			this._enableDrop = false;
 			
 			
 			this._rectDisplayMode = true;
@@ -82,7 +82,7 @@ package oapeui.component
 			if(index <0){ index = _listItems.length;}
 			
 			_listItems.splice(index,0,item);
-			
+			item.visible = false;
 			this.addChild(item);
 			
 			this.updateDisplay();
@@ -136,7 +136,7 @@ package oapeui.component
 		 * */
 		protected override function initSkin():void
 		{
-			trace("listInit");
+//			trace("listInit");
 			super.initSkin();
 			_vscrollBar.updateDisplay();//初始化完以后,必须updatedisplay一次滚动条
 			sizeChange();
@@ -163,6 +163,7 @@ package oapeui.component
 		protected override function sizeChange():void
 		{
 			_vscrollBar.height = _height;
+			_vscrollBar.x = _width - _vscrollBar.width;
 			updateDisplay();
 		}
 		
@@ -173,8 +174,6 @@ package oapeui.component
 		public override function updateDisplay():void
 		{
 			if(_hadInitSkin == false){ return ;}
-			
-			_vscrollBar.x = _width - _vscrollBar.width;
 			
 			var i:int = 0;
 			var itemLen:int = _listItems.length;
@@ -189,6 +188,10 @@ package oapeui.component
 				}else
 				{
 					_listItems[i].y = 0;
+				}
+				if(_listItems[i].visible == false)
+				{
+					_listItems[i].visible = true;
 				}
 //				trace(__$$ClassName+"=>updatedisplay,_listItems["+i+"].y:"+_listItems[i].y);
 				position += _listItems[i].height;
