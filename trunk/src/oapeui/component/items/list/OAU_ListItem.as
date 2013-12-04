@@ -30,7 +30,7 @@ package oapeui.component.items.list
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "OAU_ListItem";
+		public static const __$$ClassName:String = "OAU_ListItem";
 		
 		
 		/**
@@ -52,16 +52,15 @@ package oapeui.component.items.list
 		private var _isMouseOver:Boolean = false;
 		
 		/**
-		 * 这里开始添加你的变量
+		 * @param	uiName		使用的UINAME,默认是类名
 		 * */
-		
 		public function OAU_ListItem(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_ListItem";
 			}
-			_$UIName = (uiName == null || uiName == "")?"OAU_ListItem":uiName;
+			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			super();
 			
 			this.mouseChildren = false;

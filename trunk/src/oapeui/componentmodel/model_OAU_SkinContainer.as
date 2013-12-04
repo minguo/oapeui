@@ -31,21 +31,20 @@ package oapeui.componentmodel
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "model_OAU_SkinContainer";
+		public static const __$$ClassName:String = "model_OAU_SkinContainer";/**必须修改**/
 		
 		/**
-		 * 这里开始添加你的变量
+		 * @param	uiName		使用的UINAME,默认是类名
 		 * */
-		
-		public function model_OAU_SkinContainer(uiName:String)
+		public function model_OAU_SkinContainer(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$ClassName = "model_OAU_SkinContainer";
+				_$ClassName = "model_OAU_SkinContainer";/**必须修改**/
 			}
-			_$UIName = (uiName == null || uiName == "")?"model_OAU_SkinContainer":uiName;
+			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			
-			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();//如果没有滚动条之类的皮肤附加UI控件,这行代码可以注释掉
+			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();/**如果没有滚动条之类的皮肤附加UI控件,这行代码可以注释掉**/
 			/**
 			 * 这里添加你的子UI控件,必须添加完了再调用super,否则的话,就不能保证子UI初始化完了再初始化当前UI的顺序
 			 * */

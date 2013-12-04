@@ -32,7 +32,7 @@ package oapeui.component
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "OAU_List";
+		public static const __$$ClassName:String = "OAU_List";
 		
 		
 		/**
@@ -45,13 +45,16 @@ package oapeui.component
 		 * */
 		private var _vscrollBar:OAU_VScrollbar;
 		
+		/**
+		 * @param	uiName		使用的UINAME,默认是类名
+		 * */
 		public function OAU_List(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_List";
 			}
-			_$UIName = (uiName == null || uiName == "")?"OAU_List":uiName;
+			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			
 			//侧面滚动条
 			_vscrollBar = new OAU_VScrollbar();//使用默认样式

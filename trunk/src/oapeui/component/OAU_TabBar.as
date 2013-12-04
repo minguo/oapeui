@@ -26,7 +26,7 @@ package oapeui.component
 		/**
 		 * @private
 		 * */
-		protected static var __$$ClassName:String = "OAU_TabBar";
+		public static const __$$ClassName:String = "OAU_TabBar";
 		
 		/**
 		 * 水平排版方式
@@ -59,7 +59,7 @@ package oapeui.component
 		private var _tabItemTextFormat:OAUS_TextFormat;
 		
 		/**
-		 * 使用的UI名字,这个名字如果不设定默认会使用类名
+		 * @param	uiName		使用的UINAME,默认是类名
 		 * */
 		public function OAU_TabBar(uiName:String = "")
 		{
@@ -67,7 +67,7 @@ package oapeui.component
 			{
 				_$ClassName = "OAU_TabBar";
 			}
-			_$UIName = (uiName == null || uiName == "")?"OAU_TabBar":uiName;
+			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			super();
 			
 			this.initSkin();
