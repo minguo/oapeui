@@ -182,30 +182,11 @@ package oapeui.component.items.list
 		{
 			if(this._hadInitSkin == false){ return ;}
 			if(_imageLoadComplete == false){ return ;}
-			
-			_image.setSize(_width , _height);
-//			if(_width < _image.width)
-//			{
-//				//宽度超出范围了
-//				_image.width = _width;
-//				_image.x = 0;
-//			}else
-//			{
-//				_image.x = (_width - _image.width)/2;
-//			}
-//			
-//			if(_height < _image.height)
-//			{
-//				//高度超出范围
-//				_height = _image.height;
-//				
-//			}else
-//			{
-//				_image.y = (_height - _image.height)/2;
-//			}
-			
-//			trace(_$ClassName+"=>updateDisplay,height:"+_height);
-			
+
+			if(_image)
+			{
+				_image.setSize(_width , _height);
+			}
 			
 			super.updateDisplay();
 		}
