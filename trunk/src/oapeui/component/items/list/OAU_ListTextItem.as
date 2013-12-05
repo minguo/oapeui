@@ -75,9 +75,9 @@ package oapeui.component.items.list
 		
 		
 		/**
-		 *  设置tab标签按钮的文字样式
+		 *  设置文字样式
 		 * */
-		public function setTabItemTextFormat(tf:OAUS_TextFormat):void
+		public function setItemTextFormat(tf:OAUS_TextFormat):void
 		{
 			_textFormat = tf;
 		}
