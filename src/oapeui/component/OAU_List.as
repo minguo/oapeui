@@ -58,7 +58,7 @@ package oapeui.component
 			
 			//侧面滚动条
 			_vscrollBar = new OAU_VScrollbar();//使用默认样式
-			_vscrollBar.name = "list_vscrollbar";
+			_vscrollBar.name = __$$ClassName+"_vscrollbar";
 			_vscrollBar.visible = false;
 			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();
 			skinChilds.push(_vscrollBar);
@@ -124,6 +124,15 @@ package oapeui.component
 			if(index >= _listItems.length){ return null;}
 			
 			return _listItems[index];
+		}
+		
+		
+		/**
+		 * 获取当前列表项的数量
+		 * */
+		public function getItemNum():int
+		{
+			return _listItems.length;
 		}
 		
 		
