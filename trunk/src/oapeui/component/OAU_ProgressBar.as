@@ -1,138 +1,93 @@
-package oapeui.component.items.list
+package oapeui.component
 {
-	import flash.display.Bitmap;
 	import flash.display.DisplayObject;
 	import flash.display.MovieClip;
 	import flash.display.Sprite;
-	import flash.events.Event;
-	import flash.events.MouseEvent;
-	import flash.geom.Point;
 	import flash.geom.Rectangle;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
 	import flash.text.TextFormatAlign;
-	import flash.utils.Dictionary;
 	
 	import oape.common.OALogger;
-	import oape.events.io.FodderEventDispatcher;
 	import oape.events.io.FodderManagerEvent;
 	import oape.io.managers.FodderManager;
 	
-	import oapeui.OAPEUIConfig;
-	import oapeui.common.OAUS_FodderInfo;
 	import oapeui.common.OAUS_TextFormat;
-	import oapeui.component.base.OAU_HScrollbar;
-	import oapeui.component.base.OAU_VScrollbar;
+	import oapeui.component.base.OAU_Panel;
+	import oapeui.component.base.OAU_ToggleButton;
 	import oapeui.core.OAU_SkinContainer;
 	
+	
 	/**
-	 * 高级UI控件:文本框列表项
-	 * 
+	 * 高级UI控件:进度条(Demo)
 	 * */
-	public class OAU_ListTextItem extends OAU_ListItem
+	public final class OAU_ProgressBar extends OAU_SkinContainer
 	{
 		/**
 		 * @private
 		 * */
-		public static const __$$ClassName:String = "OAU_ListTextItem";
-		
-		/**
-		 * 文本框
-		 * */
-		private var _textField:TextField;
-		
-		/**
-		 * 文本样式
-		 * */
-		private var _textFormat:OAUS_TextFormat;
+		public static const __$$ClassName:String = "OAU_ProgressBar";
 		
 		/**
 		 * @private
-		 * 文本
+		 * 进度条素材
 		 * */
-		protected var _text:String = "";
+		protected var _skinClassNameKey_Bar:String = "progressbar_bar";
 		
 		/**
-		 * @private
-		 * 文本的HTML内容,这个内容的显示优先级比_text高
+		 * 当前进度
 		 * */
-		protected var _htmlText:String = "";
+		private var _progress:int = 0;
 		
-
+		
+		/**
+		 * 用于记录进度条元件的最大X值,他是根据素材摆放位置决定的,见参考素材
+		 * */
+		private var _progress_bar_width:int = 0;
+		
 		/**
 		 * @param	uiName		使用的UINAME,默认是类名
-		 * */		
-		public function OAU_ListTextItem(uiName:String = "")
+		 * */
+		public function OAU_ProgressBar(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$ClassName = "OAU_ListTextItem";
+				_$ClassName = "OAU_ProgressBar";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super(_$UIName);
-		}
-		
-		
-		/**
-		 *  设置文字样式
-		 * */
-		public function setItemTextFormat(tf:OAUS_TextFormat):void
-		{
-			_textFormat = tf;
-		}
-		
-		
-		/**
-		 * 设置文本的内容
-		 * */
-		public function setText(text:String,tf:OAUS_TextFormat = null):void
-		{
-			_text = text;
+			super();
 			
-			this.setTextFormat(tf);
-		}
-		
-		/**
-		 * 获取文本内容
-		 * */
-		public function getText():String
-		{
-			return _text;
-		}
-		
-		/**
-		 * 设置文本格式
-		 * */
-		public function setTextFormat(tf:OAUS_TextFormat = null):void
-		{
-			if(tf)
-			{
-				if(tf._textFormat == null)
-				{
-					tf._textFormat = new TextFormat();
-				}
-				tf._textFormat.align = TextFormatAlign.LEFT;
-			}
+			this.addSkinClassNameKey(_skinClassNameKey_Bar);
 			
-			_textFormat = tf;
+			this.loadUIFodders();
+		}
+		
+		
+		/**
+		 * 设置当前的显示进度
+		 * @param	progress	(0-100)
+		 * */
+		public function setProgress(progress:int):void
+		{
+			if(progress <0 || progress > 100){ progress = 0;}
+			_progress = progress;
 			
 			this.updateDisplay();
 		}
 		
 		
 		/**
-		 * 设置文本的HTML内容,如果设置了HTMLText,则会忽略Text的内容
+		 * 返回当前进度
 		 * */
-		public function setHtmlText(htmlText:String):void
+		public function getProgress():int
 		{
-			_htmlText = htmlText;
-			this.updateDisplay();
+			return _progress;
 		}
-		
 		
 		
 		//==============================以下为必须重载的函数=============================
+		
 		
 		/**
 		 * @private
@@ -182,15 +137,36 @@ package oapeui.component.items.list
 		 * */
 		protected override function initSkin():void
 		{
+			var skin:DisplayObject;
+			var skinClass:Class;
+			var initSkinSuccess:Boolean = true;
+			var skinClassName:String;
+			var i:int;
 			
-			_textField = new TextField();
-			_textField.name = "listTextItemTextField";
-			_textField.mouseEnabled = false;
-			this.addChild(_textField);
+			for(i=0;i<_skinClassNameKeys.length;i++)
+			{
+				skinClassName = getSkinClassName(_skinClassNameKeys[i]);
+				
+				skinClass = FodderManager.getFodderClass(_fodderUrl,skinClassName);
+				if(skinClass)
+				{
+					skin = new skinClass();
+					skin.name = skinClassName;
+					this._containerSkin.addChild(skin);
+					_skinObject[skin.name] = skin;
+				}else
+				{
+					OALogger.warn(_$ClassName+"=>initSkin,name:"+this.name+",缺少资源类:"+skinClassName+",于素材文件:"+_fodderUrl);
+					initSkinSuccess = false;
+					break;
+				}
+			}
+			
+			if(initSkinSuccess == false){ return ;}
 			
 			super.initSkin();
 			
-			this.sizeChange();
+			sizeChange();
 		}
 		
 		
@@ -212,9 +188,6 @@ package oapeui.component.items.list
 		 * */
 		protected override function sizeChange():void
 		{
-			/**
-			 * 这里添加你的代码
-			 * */
 			updateDisplay();	
 		}
 		
@@ -228,48 +201,28 @@ package oapeui.component.items.list
 		{
 			if(this._hadInitSkin == false){ return ;}
 			
-			if(_htmlText != "")
+			var skinClassName:String = getSkinClassName(_skinClassNameKey_Bar);
+			var target:MovieClip = _skinObject[skinClassName];
+			
+			if(target && target.bar)
 			{
-				_textField.htmlText = _htmlText;
-				_textField.autoSize = TextFieldAutoSize.LEFT;
-			}else
-			{
-				//更新显示
-				_textField.text = _text;
-				_textField.autoSize = TextFieldAutoSize.LEFT;
-				if(_textFormat)
+				if(_progress_bar_width == 0)
 				{
-					_textField.setTextFormat(_textFormat._textFormat);
-					_textField.filters = _textFormat._filters;
+					var barRect:Rectangle = target.getBounds(target.bar);
+					_progress_bar_width = -1*barRect.x;/**这里计算素材的最大X坐标偏移量**/
+				}
+				
+				target.width = _width;
+				target.bar.x = (_progress/100)*_progress_bar_width;
+				
+				if(target.progresstxt)
+				{
+					target.progresstxt.text = _progress+"%";
 				}
 			}
 			
-			if(_width < _textField.width)
-			{
-				//宽度超出范围了
-				_textField.width = _width;
-				_textField.x = 0;
-			}else
-			{
-				_textField.x = (_width - _textField.width)/2;
-			}
-			
-			if(_height < _textField.height)
-			{
-				//高度超出范围
-				_height = _textField.height;
-				
-			}else
-			{
-				_textField.y = (_height - _textField.height)/2;
-			}
-			
-//			trace(_$ClassName+"=>updateDisplay,height:"+_height);
-			
-			
 			super.updateDisplay();
 		}
-		
 		
 	}
 }
