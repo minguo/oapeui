@@ -22,7 +22,7 @@ package oapeui.component.items.list
 	import oapeui.core.OAU_SkinContainer;
 	
 	/**
-	 * 高级UI控件:列表项
+	 * 高级UI控件:列表项,高度默认是25
 	 * 
 	 * */
 	public class OAU_ListItem extends OAU_SkinContainer
@@ -52,6 +52,11 @@ package oapeui.component.items.list
 		private var _isMouseOver:Boolean = false;
 		
 		/**
+		 * 当前选项的值
+		 * */
+		private var _itemValue:String = "";
+		
+		/**
 		 * @param	uiName		使用的UINAME,默认是类名
 		 * */
 		public function OAU_ListItem(uiName:String = "")
@@ -64,6 +69,7 @@ package oapeui.component.items.list
 			super();
 			
 			this.mouseChildren = false;
+			this.height = 25;
 			
 			this.addSkinClassNameKey(_skinClassNameKey_BackGround_Normal);
 			this.addSkinClassNameKey(_skinClassNameKey_BackGround_MouseOver);
@@ -87,6 +93,25 @@ package oapeui.component.items.list
 			_isMouseOver = true;
 			this.updateDisplay();
 		}		
+		
+		
+		/**
+		 * 获取当前选项的值
+		 * */
+		public function getValue():String
+		{
+			return _itemValue;
+		}
+		
+		
+		/**
+		 * 设置当前选项的值
+		 * 
+		 * */
+		public function setValue(val:String):void
+		{
+			_itemValue = val;
+		}
 		
 		
 		//==============================以下为必须重载的函数=============================

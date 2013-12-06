@@ -87,7 +87,7 @@ package oapeui.component
 			_listItems.splice(index,0,item);
 			item.visible = false;
 			this.addChild(item);
-			
+
 			this.updateDisplay();
 		}
 		
@@ -111,7 +111,7 @@ package oapeui.component
 					break;
 				}
 			}
-			
+
 			this.updateDisplay();
 		}
 		
@@ -190,7 +190,7 @@ package oapeui.component
 			var i:int = 0;
 			var itemLen:int = _listItems.length;
 			var position:int = 0;//标记后一个item的Y坐标点
-//			trace(__$$ClassName+"===================");
+//			trace(__$$ClassName+",updateDisplay,height:"+_height);
 			for(i=0;i<itemLen;i++)
 			{
 				_listItems[i].width = _width;
@@ -217,6 +217,8 @@ package oapeui.component
 				{
 					_listItems[i].width = _width - _vscrollBar.width;
 				}
+				
+				_vscrollBar.setThumbPosition(_vscrollBar.getThumbPosition());
 			}else
 			{
 				_vscrollBar.setThumbPosition(0);

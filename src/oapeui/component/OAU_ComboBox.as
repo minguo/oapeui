@@ -17,7 +17,9 @@ package oapeui.component
 	import oapeui.component.base.OAU_Panel;
 	import oapeui.component.base.OAU_TextInput;
 	import oapeui.component.base.OAU_ToggleButton;
+	import oapeui.component.items.list.OAU_ListImageItem;
 	import oapeui.component.items.list.OAU_ListItem;
+	import oapeui.component.items.list.OAU_ListTextItem;
 	import oapeui.core.OAU_SkinContainer;
 	
 
@@ -138,7 +140,12 @@ package oapeui.component
 		 * */
 		public function addItem(item:OAU_ListItem):void
 		{
+			if(item.getValue() == null || item.getValue() == "")
+			{
+				OALogger.warn(_$ClassName+"=>addItem,添加了一个没有调用setValue设置值的OAU_ListItem");
+			}
 			_dropDownList.addItem(item);
+			this.updateDisplay();
 		}
 		
 		
@@ -148,6 +155,7 @@ package oapeui.component
 		public function removeItem(itemName:String):void
 		{
 			_dropDownList.removeItem(itemName);
+			this.updateDisplay();
 		}
 		
 		
@@ -168,11 +176,34 @@ package oapeui.component
 		}
 		
 		
+		/**
+		 * 设置最多可以容纳的字符数量
+		 * */
+		public function setMaxChars(num:int):void
+		{
+			_textInput.setMaxChars(num);
+		}
+		
+		
 		protected function dropDownButtonClick(event:Event):void
 		{
 			// TODO Auto-generated method stub
 			_dropDownList.visible = !_dropDownList.visible;
 		}
+		
+		
+		protected function dropDownListMouseClick(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
+			if(event.target)
+			{
+				if(event.target is OAU_ListItem)
+				{
+					_textInput.setText(OAU_ListTextItem(event.target).getValue());
+					_dropDownList.visible = false;
+				}
+			}
+		}	
 		
 		
 		//==============================以下为必须重载的函数=============================
@@ -259,6 +290,7 @@ package oapeui.component
 			/**添加下拉列表框**/
 			_dropDownList.visible = false;
 			this.addChild(_dropDownList);
+			_dropDownList.addEventListener(MouseEvent.CLICK , dropDownListMouseClick);
 			
 			
 			/**设置按钮的监听事件**/
@@ -272,7 +304,7 @@ package oapeui.component
 			
 			sizeChange();
 		}
-		
+			
 				
 		
 		/**
@@ -288,6 +320,7 @@ package oapeui.component
 			{
 				DisplayObject(_skinObject[skinClassName]).removeEventListener(MouseEvent.CLICK , dropDownButtonClick);
 			}
+			_dropDownList.removeEventListener(MouseEvent.CLICK , dropDownListMouseClick);
 			super.dispose(_$ClassName);
 		}
 		
@@ -314,7 +347,7 @@ package oapeui.component
 			var skinClassName:String = getSkinClassName(_skinClassNameKey_DropDownButton);
 			if(_skinObject[skinClassName] == null){ return ;}
 			
-			trace("shit:"+_skinObject[skinClassName].width);
+
 			_textInput.width = _width - _skinObject[skinClassName].width;
 			_skinObject[skinClassName].height = _textInput.height = _height;
 			_skinObject[skinClassName].x = _textInput.width;
