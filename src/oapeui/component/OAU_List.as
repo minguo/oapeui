@@ -40,15 +40,12 @@ package oapeui.component
 		 * */
 		private var _listItems:Vector.<OAU_ListItem> = new Vector.<OAU_ListItem>();
 		
-		/**
-		 * 右侧滚动条
-		 * */
-		private var _vscrollBar:OAU_VScrollbar;
 		
 		/**
 		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	scrollBarUIName	滚动条使用的UINAME
 		 * */
-		public function OAU_List(uiName:String = "")
+		public function OAU_List(uiName:String = "",scrollBarUIName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
@@ -56,20 +53,12 @@ package oapeui.component
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			
-			//侧面滚动条
-			_vscrollBar = new OAU_VScrollbar();//使用默认样式
-			_vscrollBar.name = __$$ClassName+"_vscrollbar";
-			_vscrollBar.visible = false;
-			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();
-			skinChilds.push(_vscrollBar);
-			
-			_vscrollBar.setScrollTarget(this);
-			
-			super(_$UIName,skinChilds);
-			this._enableDrop = false;
-			
 			
 			this._rectDisplayMode = true;
+			
+			
+			super(_$UIName,scrollBarUIName);
+			this.enableDrag(false);
 		}
 		
 		
@@ -150,6 +139,7 @@ package oapeui.component
 		{
 //			trace("listInit");
 			super.initSkin();
+			_vscrollBar.setScrollTarget(this);
 			_vscrollBar.updateDisplay();//初始化完以后,必须updatedisplay一次滚动条
 			sizeChange();
 		}
@@ -166,6 +156,22 @@ package oapeui.component
 			super.dispose(_$ClassName);
 		}
 		
+		
+		/**
+		 * 不让修改水平滚动条显示
+		 * */
+		public override function enableHScrollBar(bool:Boolean):void
+		{
+			
+		}
+		
+		/**
+		 * 不让修改垂直滚动条显示
+		 * */
+		public override function enableVScrollBar(bool:Boolean):void
+		{
+			
+		}
 		
 		
 		/**
@@ -231,7 +237,5 @@ package oapeui.component
 			
 			super.updateDisplay();
 		}
-		
-		
 	}
 }

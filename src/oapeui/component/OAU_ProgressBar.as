@@ -209,6 +209,7 @@ package oapeui.component
 				if(_progress_bar_width == 0)
 				{
 					var barRect:Rectangle = target.getBounds(target.bar);
+//					trace(_$ClassName+"=>updateDisplay,barRect:"+barRect);
 					_progress_bar_width = -1*barRect.x;/**这里计算素材的最大X坐标偏移量**/
 				}
 				

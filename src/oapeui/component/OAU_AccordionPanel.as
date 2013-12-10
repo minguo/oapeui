@@ -2,6 +2,7 @@ package oapeui.component
 {
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
+	import flash.events.MouseEvent;
 	import flash.text.TextField;
 	import flash.text.TextFieldAutoSize;
 	import flash.text.TextFormat;
@@ -16,42 +17,28 @@ package oapeui.component
 	import oapeui.component.base.OAU_ToggleButton;
 	import oapeui.core.OAU_SkinContainer;
 	
-
+	
 	/**
-	 * 高级UI控件:标签栏
-	 * 这个UI控件不受setSize影响
+	 * 高级UI控件:手风琴式面板
 	 * */
-	public final class OAU_TabBar extends OAU_SkinContainer
+	public final class OAU_AccordionPanel extends OAU_SkinContainer
 	{
 		/**
 		 * @private
 		 * */
-		public static const __$$ClassName:String = "OAU_TabBar";
+		public static const __$$ClassName:String = "OAU_AccordionPanel";
 		
-		/**
-		 * 水平排版方式
-		 * */
-		public static var __LayoutDir_V:int = 0;
-		
-		/**
-		 * 垂直排版方式
-		 * */
-		public static var __LayoutDir_H:int = 1;
-		
-		/**
-		 * 默认是水平排版方式
-		 * */
-		private var _layoutDir:int = 0;
-		
-		/**
-		 * 四周边距
-		 * */
-		private var _padding:int = 2;
 		
 		/**
 		 * tab标签按钮
 		 * */
 		private var _tabItems:Vector.<OAU_ToggleButton> = new Vector.<OAU_ToggleButton>();
+		
+		
+		/**
+		 * tab标签指向的容器
+		 * */
+		private var _tabContainer:Vector.<OAU_Panel> = new Vector.<OAU_Panel>();
 		
 		/**
 		 * tab标签的样式
@@ -61,11 +48,11 @@ package oapeui.component
 		/**
 		 * @param	uiName		使用的UINAME,默认是类名
 		 * */
-		public function OAU_TabBar(uiName:String = "")
+		public function OAU_AccordionPanel(uiName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
-				_$ClassName = "OAU_TabBar";
+				_$ClassName = "OAU_AccordionPanel";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			super();
@@ -74,33 +61,15 @@ package oapeui.component
 		}
 		
 		
-		/**
-		 * 设置标签间距
-		 * @param	padding		间距(像素)
-		 * */
-		public function setTabPadding(padding:int):void
-		{
-			_padding = padding;
-			this.updateDisplay();
-		}
-		
-		/**
-		 * 获取当前标签间距
-		 * */
-		public function getTabPadding():int
-		{
-			return _padding;
-		}
-		
 		
 		/**
 		 * 添加一个标签,并把这个标签跟一个容器关联起来
 		 * @param	tabName			tab标签对象的name属性
 		 * @param	tabTitle		tab标签的文字内容
-		 * @param	tabButtonWidth	tab标签按钮的默认宽度
+		 * @param	container		tab标签切换到的容器
 		 * @param	tabButtonHeight	tab标签按钮的默认高度
 		 * */
-		public function addTab(tabName:String , tabTitle:String , tabButtonWidth:int = 50 ,tabButtonHeight:int = 25):void
+		public function addTab(tabName:String  , tabTitle:String, container:OAU_Panel ,tabButtonHeight:int = 25 ):void
 		{
 			if(tabName == "" || tabName == null)
 			{ 
@@ -108,6 +77,19 @@ package oapeui.component
 				return ;
 			}
 			
+			if(container == null)
+			{
+				OALogger.error(_$ClassName+"=>addTab,不允许添加空的容器");
+				return;
+			}
+			
+			if(_tabItems.length != _tabContainer.length)
+			{
+				OALogger.error(_$ClassName+"=>addTab,tab标签数和对应容器的数量不一致,添加失败");
+				return ;
+			}
+			
+			container.enableDrag(false);
 			var tabItem:OAU_ToggleButton;
 			if((tabItem = this.getChildByName(tabName) as OAU_ToggleButton) != null)
 			{
@@ -117,15 +99,26 @@ package oapeui.component
 				tabItem = new OAU_ToggleButton(_$UIName);//这里必须使用当前的UINAME,否则会使用默认的togglebutton
 				tabItem.name = tabName;
 				this._tabItems[this._tabItems.length] = tabItem;
+				
+				this._tabContainer[this._tabContainer.length] = container;
+				
+				tabItem.addEventListener(MouseEvent.CLICK , tabItemClickEvent);
+				
 				this.addChild(tabItem);
+				this.addChild(container);
 			}
-			tabItem.setSize(tabButtonWidth,tabButtonHeight);
+			tabItem.setSize(_width,tabButtonHeight);
 			tabItem.setText(tabTitle,_tabItemTextFormat);
 			tabItem.setGroupName(this.name+"_defaulttab");
 			
 			this.updateDisplay();
 		}
 		
+		protected function tabItemClickEvent(event:MouseEvent):void
+		{
+			// TODO Auto-generated method stub
+			this.updateDisplay();
+		}		
 		
 		/**
 		 * 设置当前选中的标签
@@ -139,7 +132,10 @@ package oapeui.component
 				if(_tabItems[i].name == tabName)
 				{
 					_tabItems[i].setSelected(true);
-					break;
+					_tabContainer[i].visible = true;
+				}else
+				{
+					_tabContainer[i].visible = false;
 				}
 			}
 			
@@ -164,6 +160,24 @@ package oapeui.component
 			return null;
 		}
 		
+		
+		/**
+		 * 会当前被选中标签的容器对象
+		 * */
+		public function getSelectedTabPanel():OAU_Panel
+		{
+			var i:int;
+			for(i=0;i<_tabItems.length;i++)
+			{
+				if(_tabItems[i].isSelected() == true)
+				{
+					return _tabContainer[i];
+				}
+			}
+			
+			return null;
+		}
+		
 		/**
 		 * 移除一个tab标签
 		 * @param	tabName		目标标签按钮的name
@@ -181,17 +195,20 @@ package oapeui.component
 						isRemoveSelectedItem = true;
 					}
 					this.removeChild(_tabItems[i]);
+					this.removeChild(_tabContainer[i]);
 					_tabItems.splice(i,1);
+					_tabContainer.splice(i,1);
 					break;
 				}
 			}
 			
 			if(isRemoveSelectedItem == true && _tabItems.length >0)
 			{
-				_tabItems[0].setSelected(true);
+				setSelectedTabItem(_tabItems[0].name);
+			}else
+			{
+				this.updateDisplay();
 			}
-			
-			this.updateDisplay();
 		}
 		
 		
@@ -201,6 +218,7 @@ package oapeui.component
 		public function setTabItemTextFormat(tf:OAUS_TextFormat):void
 		{
 			_tabItemTextFormat = tf;
+			
 			var tablen:int = _tabItems.length;
 			var i:int;
 			
@@ -211,15 +229,6 @@ package oapeui.component
 		}
 		
 		
-		/**
-		 * 设置排版方式,水平还是垂直
-		 * */
-		public function setLayout(layout:int):void
-		{
-			_layoutDir = layout
-			
-			this.updateDisplay();
-		}
 		
 		
 		//==============================以下为必须重载的函数=============================
@@ -314,33 +323,73 @@ package oapeui.component
 		{
 			if(this._hadInitSkin == false){ return ;}
 			
-			var i:int;
-			var position:int = 0;
+			if(_tabItems.length != _tabContainer.length)
+			{
+				return ;
+			}
 			
-			if(_layoutDir == __LayoutDir_V)
+			var i:int;
+			var tabLen:int = _tabItems.length;
+			var topHeight:int = 0;/**展开的容器,离顶部的距离,这个距离等于容器上面折叠起来的tab的高度**/
+			var bottomHeight:int = 0;/**展开的容器,离底部的距离,这个距离等于容器下面折叠起来的tab的高度**/
+			var tabYpos:int = 0;//Ypos还没计算好
+			
+			var targetTabContainer:OAU_Panel = null;
+			var targetTabIndex:int = 0;/**找到展开的TAB的索引**/
+			
+			for(i=0;i<tabLen;i++)
 			{
-				//水平方向排列
-				for(i=0;i<_tabItems.length;i++)
+				if(_tabItems[i] == null){ continue;}
+				_tabItems[i].width = _width;
+				
+				if(_tabItems[i].isSelected() == false)
 				{
-					if(_tabItems[i] == null){ continue;}
-					_tabItems[i].x = position;
-					_tabItems[i].y = 0;
-					position += _tabItems[i].width + _padding;
+					if(targetTabContainer == null)
+					{
+						topHeight += _tabItems[i].height;
+					}else
+					{
+						bottomHeight += _tabItems[i].height;
+					}
+					
+					_tabItems[i].y = tabYpos;
+					tabYpos += _tabItems[i].height;
+					
+					
+					
+					_tabContainer[i].visible = false;
+				}else
+				{
+					topHeight += _tabItems[i].height;
+					_tabItems[i].y = tabYpos;
+					tabYpos += _tabItems[i].height;
+					targetTabContainer = _tabContainer[i];
+					_tabContainer[i].visible = true;
+					targetTabIndex = i;
 				}
-			}else
+			}
+			
+			/**重新定位**/
+			if(targetTabContainer)
 			{
-				//垂直方向排列
-				for(i=0;i<_tabItems.length;i++)
+				var targetTabContainerHeight:int = _height - topHeight - bottomHeight;
+				if(targetTabContainerHeight <1){ targetTabContainerHeight = 1;}
+//				trace(_$ClassName+"=>updateDisplay:"+_width+","+targetTabContainerHeight);
+				targetTabContainer.setSize(_width , targetTabContainerHeight);
+				targetTabContainer.y = topHeight;
+				
+				tabYpos = targetTabContainer.y + targetTabContainerHeight;
+				
+				/**排好容器下面的tab位置**/
+				for(i= targetTabIndex +1;i<tabLen;i++)
 				{
-					if(_tabItems[i] == null){ continue;}
-					_tabItems[i].x = 0;
-					_tabItems[i].y = position;
-					position += _tabItems[i].height + _padding;
+					_tabItems[i].y = tabYpos;
+					tabYpos += _tabItems[i].height;
 				}
 			}
 			
 			super.updateDisplay();
 		}
-
+		
 	}
 }
