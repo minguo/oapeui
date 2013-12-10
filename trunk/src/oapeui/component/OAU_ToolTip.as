@@ -61,6 +61,7 @@ package oapeui.component
 				_$ClassName = "OAU_ToolTip";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
+			
 			super(_$UIName);
 			
 		}
