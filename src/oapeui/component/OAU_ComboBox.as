@@ -13,7 +13,7 @@ package oapeui.component
 	import oape.events.io.FodderManagerEvent;
 	import oape.io.managers.FodderManager;
 	
-	import oapeui.common.OAUS_TextFormat;
+	import oapeui.common.struct.OAUS_TextFormat;
 	import oapeui.component.base.OAU_Panel;
 	import oapeui.component.base.OAU_TextInput;
 	import oapeui.component.base.OAU_ToggleButton;

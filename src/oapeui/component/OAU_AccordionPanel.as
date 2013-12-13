@@ -12,7 +12,7 @@ package oapeui.component
 	import oape.events.io.FodderManagerEvent;
 	import oape.io.managers.FodderManager;
 	
-	import oapeui.common.OAUS_TextFormat;
+	import oapeui.common.struct.OAUS_TextFormat;
 	import oapeui.component.base.OAU_Panel;
 	import oapeui.component.base.OAU_ToggleButton;
 	import oapeui.core.OAU_SkinContainer;
@@ -66,7 +66,7 @@ package oapeui.component
 		 * 添加一个标签,并把这个标签跟一个容器关联起来
 		 * @param	tabName			tab标签对象的name属性
 		 * @param	tabTitle		tab标签的文字内容
-		 * @param	container		tab标签切换到的容器
+		 * @param	container		tab标签切换到的容器,容器的宽度会跟随UI的宽度,高度会根据UI的高度和标签个个数来自动调整
 		 * @param	tabButtonHeight	tab标签按钮的默认高度
 		 * */
 		public function addTab(tabName:String  , tabTitle:String, container:OAU_Panel ,tabButtonHeight:int = 25 ):void
@@ -177,6 +177,32 @@ package oapeui.component
 			
 			return null;
 		}
+		
+		
+		/**
+		 * 根据tab标签的name,获取对应容器
+		 * */
+		public function getPanelByTabName(tabName:String):OAU_Panel
+		{
+			if(_tabItems.length != _tabContainer.length)
+			{
+				OALogger.error(_$ClassName+"=>getPanelByTabName,tab标签数和对应容器的数量不一致");
+				return null;
+			}
+			
+			var tablen:int = _tabItems.length;
+			var i:int;
+			for(i=0;i<tablen;i++)
+			{
+				if(_tabItems[i].name == tabName)
+				{
+					return _tabContainer[i];
+				}
+			}
+			
+			return null;
+		}
+		
 		
 		/**
 		 * 移除一个tab标签
@@ -332,7 +358,7 @@ package oapeui.component
 			var tabLen:int = _tabItems.length;
 			var topHeight:int = 0;/**展开的容器,离顶部的距离,这个距离等于容器上面折叠起来的tab的高度**/
 			var bottomHeight:int = 0;/**展开的容器,离底部的距离,这个距离等于容器下面折叠起来的tab的高度**/
-			var tabYpos:int = 0;//Ypos还没计算好
+			var tabYpos:int = 0;
 			
 			var targetTabContainer:OAU_Panel = null;
 			var targetTabIndex:int = 0;/**找到展开的TAB的索引**/
