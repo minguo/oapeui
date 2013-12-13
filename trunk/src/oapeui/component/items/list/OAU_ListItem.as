@@ -16,7 +16,7 @@ package oapeui.component.items.list
 	import oape.io.managers.FodderManager;
 	
 	import oapeui.OAPEUIConfig;
-	import oapeui.common.OAUS_FodderInfo;
+	import oapeui.common.struct.OAUS_FodderInfo;
 	import oapeui.component.base.OAU_HScrollbar;
 	import oapeui.component.base.OAU_VScrollbar;
 	import oapeui.core.OAU_SkinContainer;

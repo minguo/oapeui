@@ -9,7 +9,7 @@ package oapeui.component
 	import oape.common.OALogger;
 	import oape.io.managers.FodderManager;
 	
-	import oapeui.common.OAUS_TextFormat;
+	import oapeui.common.struct.OAUS_TextFormat;
 	import oapeui.component.base.OAU_Panel;
 	
 
