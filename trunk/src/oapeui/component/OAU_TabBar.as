@@ -59,7 +59,7 @@ package oapeui.component
 		private var _tabItemTextFormat:OAUS_TextFormat;
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName			使用的UINAME,默认是类名
 		 * */
 		public function OAU_TabBar(uiName:String = "")
 		{
@@ -68,7 +68,7 @@ package oapeui.component
 				_$ClassName = "OAU_TabBar";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super();
+			super("");
 			
 			this.initSkin();
 		}

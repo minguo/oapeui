@@ -34,9 +34,10 @@ package oapeui.componentmodel
 		public static const __$$ClassName:String = "model_OAU_SkinContainer";/**必须修改**/
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName			使用的UINAME,默认是类名
+		 * @param	uiResPreName	资源的名字前缀(这个参数可以不提供,根据是否有自己的皮肤而定)
 		 * */
-		public function model_OAU_SkinContainer(uiName:String = "")
+		public function model_OAU_SkinContainer(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
@@ -48,7 +49,7 @@ package oapeui.componentmodel
 			/**
 			 * 这里添加你的子UI控件,必须添加完了再调用super,否则的话,就不能保证子UI初始化完了再初始化当前UI的顺序
 			 * */
-			super(skinChilds);
+			super(uiResPreName,skinChilds);
 			/**
 			 * 这里添加你的初始化代码
 			 * */

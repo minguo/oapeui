@@ -61,16 +61,17 @@ package oapeui.component.items.list
 		
 
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName			使用的UINAME,默认是类名
+		 * @param	uiResPreName	资源的名字前缀
 		 * */		
-		public function OAU_ListTextItem(uiName:String = "")
+		public function OAU_ListTextItem(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_ListTextItem";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super(_$UIName);
+			super(_$UIName,uiResPreName);
 		}
 		
 		

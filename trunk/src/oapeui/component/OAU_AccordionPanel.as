@@ -46,16 +46,17 @@ package oapeui.component
 		private var _tabItemTextFormat:OAUS_TextFormat;
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName				使用的UINAME,默认是类名
+		 * @param	uiResPreName		资源的名字前缀
 		 * */
-		public function OAU_AccordionPanel(uiName:String = "")
+		public function OAU_AccordionPanel(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_AccordionPanel";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super();
+			super(uiResPreName);
 			
 			this.initSkin();
 		}
