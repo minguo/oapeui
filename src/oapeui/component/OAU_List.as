@@ -42,10 +42,12 @@ package oapeui.component
 		
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
-		 * @param	scrollBarUIName	滚动条使用的UINAME
+		 * @param	uiName					使用的UINAME,默认是类名
+		 * @param	uiResPreName			资源的名字前缀
+		 * @param	scrollBarUIName			滚动条使用的UINAME
+		 * @param	scrollBarUiResPreName	滚动条使用的资源的名字前缀
 		 * */
-		public function OAU_List(uiName:String = "",scrollBarUIName:String = "")
+		public function OAU_List(uiName:String = "",uiResPreName:String = "",scrollBarUIName:String = "",scrollBarUiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
@@ -57,7 +59,7 @@ package oapeui.component
 			this._rectDisplayMode = true;
 			
 			
-			super(_$UIName,scrollBarUIName);
+			super(_$UIName,uiResPreName,scrollBarUIName,scrollBarUiResPreName);
 			this.enableDrag(false);
 		}
 		

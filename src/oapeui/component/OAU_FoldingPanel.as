@@ -55,7 +55,7 @@ package oapeui.component
 				_$ClassName = "OAU_FoldingPanel";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super();
+			super("");
 			
 			this.initSkin();
 		}

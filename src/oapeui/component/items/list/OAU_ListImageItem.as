@@ -52,9 +52,10 @@ package oapeui.component.items.list
 		
 
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName			使用的UINAME,默认是类名
+		 * @param	uiResPreName	资源的名字前缀
 		 * */
-		public function OAU_ListImageItem(uiName:String = "")
+		public function OAU_ListImageItem(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
@@ -63,7 +64,7 @@ package oapeui.component.items.list
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			
 			
-			super(_$UIName);
+			super(_$UIName,uiResPreName);
 
 		}
 		

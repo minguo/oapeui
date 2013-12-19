@@ -47,16 +47,17 @@ package oapeui.component
 		private var _progress_bar_width:int = 0;
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName			使用的UINAME,默认是类名
+		 * @param	uiResPreName	资源的名字前缀
 		 * */
-		public function OAU_ProgressBar(uiName:String = "")
+		public function OAU_ProgressBar(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_ProgressBar";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super();
+			super(uiResPreName);
 			
 			this.addSkinClassNameKey(_skinClassNameKey_Bar);
 			

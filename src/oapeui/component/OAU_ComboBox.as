@@ -56,8 +56,9 @@ package oapeui.component
 		
 		/**
 		 * @param	uiName				使用的UINAME,默认是类名
+		 * @param	uiResPreName		资源的名字前缀
 		 * */
-		public function OAU_ComboBox(uiName:String = "" )
+		public function OAU_ComboBox(uiName:String = "" ,uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
@@ -67,16 +68,16 @@ package oapeui.component
 			
 			var skinChilds:Vector.<OAU_SkinContainer> = new Vector.<OAU_SkinContainer>();
 			
-			_textInput = new OAU_TextInput(_$UIName);
+			_textInput = new OAU_TextInput(_$UIName,uiResPreName);
 			_textInput.name = __$$ClassName+"_textInput";
 			skinChilds.push(_textInput);
 			
-			_dropDownList = new OAU_List(_$UIName);
+			_dropDownList = new OAU_List(_$UIName,uiResPreName);
 			_dropDownList.name = __$$ClassName+"_dropDownList";
 			_dropDownList.visible = false;
 			skinChilds.push(_dropDownList);
 			
-			super();
+			super(uiResPreName);
 			
 			this.setSize(100,25);
 			

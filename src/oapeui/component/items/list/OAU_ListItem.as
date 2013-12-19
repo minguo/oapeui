@@ -57,16 +57,17 @@ package oapeui.component.items.list
 		private var _itemValue:String = "";
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName				使用的UINAME,默认是类名
+		 * @param	uiResPreName		资源的名字前缀
 		 * */
-		public function OAU_ListItem(uiName:String = "")
+		public function OAU_ListItem(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
 				_$ClassName = "OAU_ListItem";
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
-			super();
+			super(uiResPreName);
 			
 			this.mouseChildren = false;
 			this.height = 25;

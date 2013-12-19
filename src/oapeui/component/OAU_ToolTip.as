@@ -52,9 +52,10 @@ package oapeui.component
 		
 		
 		/**
-		 * @param	uiName		使用的UINAME,默认是类名
+		 * @param	uiName			使用的UINAME,默认是类名
+		 * @param	uiResPreName	资源的名字前缀
 		 * */
-		public function OAU_ToolTip(uiName:String = "")
+		public function OAU_ToolTip(uiName:String = "",uiResPreName:String = "")
 		{
 			if(_$ClassName == "" || _$ClassName == null)
 			{
@@ -62,7 +63,7 @@ package oapeui.component
 			}
 			_$UIName = (uiName == null || uiName == "")?_$ClassName:uiName;
 			
-			super(_$UIName);
+			super(_$UIName,uiResPreName);
 			
 		}
 		
