@@ -226,10 +226,10 @@ package oapeui.component
 					_listItems[i].width = _width - _vscrollBar.width;
 				}
 				
-				_vscrollBar.setThumbPosition(_vscrollBar.getThumbPosition());
+				_vscrollBar.setScrollValue(_vscrollBar.getMaxScrollValue());
 			}else
 			{
-				_vscrollBar.setThumbPosition(0);
+				_vscrollBar.setScrollValue(0);
 				_vscrollBar.visible = false;
 				for(i=0;i<itemLen;i++)
 				{
