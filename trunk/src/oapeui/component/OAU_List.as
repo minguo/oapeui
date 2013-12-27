@@ -216,7 +216,7 @@ package oapeui.component
 //				trace(__$$ClassName+"=>updatedisplay,_listItems["+i+"].y:"+_listItems[i].y);
 				position += _listItems[i].height;
 			}
-			
+//			trace(__$$ClassName+"=>updatedisplay,position:"+position);
 			if(position > this._height)
 			{
 				//子对象的高度超过LIST高度,显示滚动条
@@ -226,7 +226,7 @@ package oapeui.component
 					_listItems[i].width = _width - _vscrollBar.width;
 				}
 				
-				_vscrollBar.setScrollValue(_vscrollBar.getMaxScrollValue());
+				_vscrollBar.setScrollValue(_vscrollBar.getScrollValue());
 			}else
 			{
 				_vscrollBar.setScrollValue(0);
