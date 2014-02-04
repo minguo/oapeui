@@ -15,6 +15,7 @@ package oapeui.dialog
 	import oape.events.io.FodderManagerEvent;
 	import oape.io.managers.FodderManager;
 	
+	import oapeui.common.OAPopUpManager;
 	import oapeui.common.struct.OAUS_TextFormat;
 	import oapeui.component.base.OAU_Button;
 	import oapeui.component.base.OAU_Panel;
@@ -145,6 +146,7 @@ package oapeui.dialog
 			var ocbp:OsCallBackParam = new OsCallBackParam();
 			ocbp._message = event.target.name;
 			ocbp._dataObject["target"] = this;
+			OAPopUpManager.removePopUp(this);
 			
 			var callBackFunc:Function;
 			
