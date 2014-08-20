@@ -211,8 +211,8 @@ package oapeui.component.items.list
 			
 			super.initSkin();
 			
-			this.addEventListener(MouseEvent.MOUSE_OVER,mouseOverEvent);
-			this.addEventListener(MouseEvent.MOUSE_OUT,mouseOutEvent);
+			this.addEventListener(MouseEvent.MOUSE_OVER,mouseOverEvent,false,int.MAX_VALUE);
+			this.addEventListener(MouseEvent.MOUSE_OUT,mouseOutEvent,false,int.MAX_VALUE);
 			
 			sizeChange();
 		}

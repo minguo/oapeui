@@ -300,7 +300,7 @@ package oapeui.dialog
 			}else
 			{
 				_textArea.height = _height - _contentPadding - _textArea.y - _buttons[0].height - 5;
-				
+				//trace("height:"+_textArea.height);
 				var i:int,totalWidth:int;
 				for(i=0;i<_buttons.length;i++)
 				{
